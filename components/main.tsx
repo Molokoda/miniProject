@@ -1,74 +1,94 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Dimensions } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoginForm from '../forms/loginForm'
-import RegistrationForm from '../forms/registrationForm'
-import WeatherWindow from './weatherWindow'
-import ShopForm from '../forms/shopForm'
+import React, { useReducer } from 'react';
+import { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, ImagePropTypes } from 'react-native';
+import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
 
-const Main: React.FC = () => {
-    const [show, setShow] = useState('main');
-    const [user, setUser] = useState('');
-    let temp: string = '';
-    AsyncStorage.getItem('isLogin').then(result => temp = result)
+async function logOut(setShow: void){
+    await AsyncStorage.setItem('isLogin', JSON.stringify({login: 'false', user: ''}));
+    setShow('main');
+}
 
-    useEffect( () => {
-      setTimeout(() =>  {
-        if(!user){
-          let isLogin = JSON.parse(temp);
-          if(isLogin.login === 'true'){
-            setUser(isLogin.user);
-            setShow('weatherWindow');
+async function changeUser(user){
+  // "Эта функция не работает "
+  let temp = await AsyncStorage.getItem('users');
+  let arrayOfData = JSON.parse(temp);
+  let index = 0;
+  arrayOfData.forEach( (element, index) => {
+    if(element.login === user.logn){
+      index = index;
+    }
+  })
+  arrayOfData[index] = user; 
+  await AsyncStorage.setItem('users', JSON.stringify(arrayOfData) );
+}
+
+async function changeTheme(setting, user, setSetting: void){
+  if(setting.backgroundColor === 'white'){
+    user.setting.backgroundColor = 'black';
+    user.setting.textColor = 'white';
+    await changeUser(user);
+    setSetting({backgroundColor: 'black', textColor: 'white'});
+  }
+  else{
+    user.setting.backgroundColor = 'white';
+    user.setting.textColor = 'black';
+    await changeUser(user);
+    setSetting({backgroundColor: 'white', textColor: 'black'});
+  }
+}
+
+const Main: React.FC<Props> = (props) => {
+    
+    const [isLoading, setIsLoading] = useState(true);
+    const [city, setCity] = useState('');
+    const [setting, setSetting] = useState({backgroundColor: props.user.setting.backgroundColor, textColor: props.user.setting.textColor });
+    useEffect(() => {
+      if(!city){
+        (async () => {
+          let { status } = await Location.requestPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
           }
-        }   
-      }, 300 )
-       
+  
+          let location = await Location.getCurrentPositionAsync({});
+          setCity(location);
+        })();
+      }
+      
+      if(city && isLoading){
+        setIsLoading(false);
+        
+      }
     })
 
-    if( show === 'main'){
-      return (
-        <View style={styles.container}>
-          <Button title = "Login" onPress={() => setShow('login')} />
-          <Button title = "Registration" onPress={() => setShow('registration')} />
-          <Button title = "add shop" onPress={() => setShow('createShop')} />
-          {/* <MapView style={styles.map} /> Этот компонент не работает*/}
-        </View>
-      );
+    if(isLoading){        
+        return(
+            <View style = {[styles.container, {backgroundColor: props.user.setting.backgroundColor}]}>  
+            <Text>Is loading...</Text>
+            </View>
+        )
     }
-    else if( show === 'login'){
-      return(
-        <LoginForm setUser = {setUser} setShow = {setShow}/>
-      )
-    } 
-    else if(show === 'registration'){
-      return(
-        <RegistrationForm setShow = {setShow}/>
-      )
+    else{
+        return(
+            <View style={[styles.container, {backgroundColor: setting.backgroundColor}]}>
+                <Text style = { {color : setting.textColor}  }>Welcome, {props.user.name}</Text>
+                <Button title = 'map' onPress = { () => alert('map')}/>
+                <Button title = 'change theme' onPress = {() => changeTheme(setting, props.user, setSetting)}></Button>
+                <Button title = 'logOut' onPress = { () => logOut(props.setShow)}/>
+                {/* <MapView/> */}
+            </View>
+        )
     }
-    else if(show === 'createShop'){
-      return(
-        <ShopForm setShow = {setShow}/>
-      )
-    }
-    else if(show === 'weatherWindow'){
-      return(
-        <WeatherWindow user = {user} setShow = {setShow}/>
-      )
-    }  
-  }
-  
+}
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+     // backgroundColor: 'black',
       alignItems: 'center',
       justifyContent: 'center',
-    },
-    map: {
-      width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height,
     },
   });
 

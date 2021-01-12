@@ -1,16 +1,14 @@
 import React from 'react';
 import {useState} from 'react';
-import { StyleSheet, Button, Text, View, TextInput } from 'react-native';
+import {  StyleSheet, Button, Text, View, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import loginScheme from '../scheme/loginScheme'
 import { boolean } from 'joi';
 
-
-
 async function loginUser(login: string, password: string, setShow: void, setUser: void){
     let validate = await loginScheme.validate( {login: login, password: password} );
     if(validate.error){
-        alert(validate.error);
+         alert(validate.error);
     }
     else{
         let temp: string = await AsyncStorage.getItem('users');
