@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, View, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import regScheme from '../scheme/registrationScheme'
+//import regScheme from '../scheme/registrationScheme'
 
-async function regNewUser(login: string, password: string, name: string, setShow: void){
-    let validate = await regScheme.validate({ login: login, password: password, name: name});
-    if(validate.error){
-        alert(validate.error);
-    }
-    else{
+async function regNewUser(login: string, password: string, name: string, navigation: any){
+    // let validate = await regScheme.validate({ login: login, password: password, name: name});
+    // if(validate.error){
+    //     alert(validate.error);
+    // }
+    // else{
         let temp = await AsyncStorage.getItem('users');
         
         if(temp){
-          let arrayOfUser: [] = JSON.parse(temp);
+          let arrayOfUser: any = JSON.parse(temp);
           let checkUser = arrayOfUser.find( (user: {login: string, password: string, name: string}) => user.login === login)
           if( checkUser ){
               alert('User with such login has already exist');
@@ -29,7 +29,7 @@ async function regNewUser(login: string, password: string, name: string, setShow
               arrayOfUser.push(user);
               await AsyncStorage.setItem('users', JSON.stringify(arrayOfUser));
               alert('Success');
-              setShow('main');
+              navigation.navigation.navigate('main');
           }
         }
         else{
@@ -42,14 +42,19 @@ async function regNewUser(login: string, password: string, name: string, setShow
               textColor: 'black'
             }
           }
-          let arrayOfUser: [] = [];
+          let arrayOfUser: any = [];
           arrayOfUser.push(user);
           await AsyncStorage.setItem('users', JSON.stringify(arrayOfUser));
           alert('Success');
-          setShow('main');
+          navigation.navigation.navigate('main');
         }  
-    }
+    //}
 }
+
+type Props = {
+  navigation: any,
+}
+
 
 const RegistrationForm: React.FC<Props> = (props) => {
     const [login, setLogin] = useState('');
@@ -58,13 +63,12 @@ const RegistrationForm: React.FC<Props> = (props) => {
     return (
       <View style={styles.container}>
         <Text>Enter your login</Text>
-        <TextInput placeholder = {'Enter your login'} onChange = {(event) => setLogin(event.target.value)} />
+        <TextInput placeholder = {'Enter your login'} onChange = {(event: any) => setLogin(event.target.value)} />
         <Text>Enter your password</Text>
-        <TextInput placeholder = {'Enter your password'} onChange = {(event) => setPassword(event.target.value)} />
+        <TextInput placeholder = {'Enter your password'} onChange = {(event: any) => setPassword(event.target.value)} />
         <Text>Enter your name</Text>
-        <TextInput placeholder = {'Enter your name'} onChange = {(event) => setName(event.target.value)}/>
-        <Button title = 'registration' onPress = { () => regNewUser(login, password, name, props.setShow) }/>
-        <Button title = 'back' onPress = { () => props.setShow('main') }/>
+        <TextInput placeholder = {'Enter your name'} onChange = {(event: any) => setName(event.target.value)}/>
+        <Button title = 'registration' onPress = { () => regNewUser(login, password, name, props.navigation) }/>
       </View>
     );
   }

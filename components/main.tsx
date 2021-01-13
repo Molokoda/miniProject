@@ -3,40 +3,29 @@ import React, { useReducer } from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, ImagePropTypes } from 'react-native';
 import * as Location from 'expo-location';
-import MapView from 'react-native-maps';
+import Map from './map'
+import { createDrawerNavigator } from '@react-navigation/drawer';
+const Drawer = createDrawerNavigator();
 
-async function logOut(setShow: void){
+
+async function logOut(setShow: any){
     await AsyncStorage.setItem('isLogin', JSON.stringify({login: 'false', user: ''}));
     setShow('main');
 }
 
-async function changeUser(user){
-  // "Эта функция не работает "
-  let temp = await AsyncStorage.getItem('users');
-  let arrayOfData = JSON.parse(temp);
-  let index = 0;
-  arrayOfData.forEach( (element, index) => {
-    if(element.login === user.logn){
-      index = index;
-    }
-  })
-  arrayOfData[index] = user; 
-  await AsyncStorage.setItem('users', JSON.stringify(arrayOfData) );
+type Props = {
+  user: any,
+  setUser: any,
+  navigation: any
+  
 }
 
-async function changeTheme(setting, user, setSetting: void){
-  if(setting.backgroundColor === 'white'){
-    user.setting.backgroundColor = 'black';
-    user.setting.textColor = 'white';
-    await changeUser(user);
-    setSetting({backgroundColor: 'black', textColor: 'white'});
-  }
-  else{
-    user.setting.backgroundColor = 'white';
-    user.setting.textColor = 'black';
-    await changeUser(user);
-    setSetting({backgroundColor: 'white', textColor: 'black'});
-  }
+const MapButton: React.FC<Props> = (props) => {
+  return(
+    <View style = {styles.container}>
+      <Button title = 'map' onPress = { () => alert('map')}/>
+    </View>
+  )
 }
 
 const Main: React.FC<Props> = (props) => {
@@ -49,11 +38,11 @@ const Main: React.FC<Props> = (props) => {
         (async () => {
           let { status } = await Location.requestPermissionsAsync();
           if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
+            alert('Permission to access location was denied');
             return;
           }
   
-          let location = await Location.getCurrentPositionAsync({});
+          let location: any = await Location.getCurrentPositionAsync({});
           setCity(location);
         })();
       }
@@ -73,13 +62,11 @@ const Main: React.FC<Props> = (props) => {
     }
     else{
         return(
-            <View style={[styles.container, {backgroundColor: setting.backgroundColor}]}>
-                <Text style = { {color : setting.textColor}  }>Welcome, {props.user.name}</Text>
-                <Button title = 'map' onPress = { () => alert('map')}/>
-                <Button title = 'change theme' onPress = {() => changeTheme(setting, props.user, setSetting)}></Button>
-                <Button title = 'logOut' onPress = { () => logOut(props.setShow)}/>
-                {/* <MapView/> */}
-            </View>
+          <Drawer.Navigator > 
+            <Drawer.Screen  name = "Main" component = {MapButton}/>
+            <Drawer.Screen  name = "Map" component = {Map}/>
+          </Drawer.Navigator >
+        
         )
     }
 }
