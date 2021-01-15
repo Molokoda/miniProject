@@ -5,6 +5,9 @@ import { StyleSheet, Text, View, Button, ImagePropTypes } from 'react-native';
 import * as Location from 'expo-location';
 import Map from './map'
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import ShopForm from '../forms/shopForm';
+import Setting from './setting'
+import ShopsList from './shopsList';
 const Drawer = createDrawerNavigator();
 
 
@@ -20,21 +23,38 @@ type Props = {
   
 }
 
-const MapButton: React.FC<Props> = (props) => {
+type PropsMapButton = {
+  navigation: any
+}
+
+const MapButton: React.FC<PropsMapButton> = (props) => {
   return(
     <View style = {styles.container}>
-      <Button title = 'map' onPress = { () => alert('map')}/>
+      <Button title = 'map' onPress = { () => props.navigation.navigation.navigate('map')}/>
     </View>
+  )
+}
+
+const ToStart: React.FC<PropsMapButton> = (props) => {
+  useEffect( () => {
+    AsyncStorage.setItem('isLogin', JSON.stringify({login: 'false', user: ''}) );
+    props.navigation.navigation.navigate('start');
+  })
+  return(
+    <View></View>
   )
 }
 
 const Main: React.FC<Props> = (props) => {
     
     const [isLoading, setIsLoading] = useState(true);
+    const [coords, setCoords] = useState('');
     const [city, setCity] = useState('');
-    const [setting, setSetting] = useState({backgroundColor: props.user.setting.backgroundColor, textColor: props.user.setting.textColor });
+    const [markers, setMarkers] = useState([]);
+    let temp: any = '';
+    AsyncStorage.getItem('shops').then(result => temp = result)
     useEffect(() => {
-      if(!city){
+      if(!coords){
         (async () => {
           let { status } = await Location.requestPermissionsAsync();
           if (status !== 'granted') {
@@ -43,40 +63,67 @@ const Main: React.FC<Props> = (props) => {
           }
   
           let location: any = await Location.getCurrentPositionAsync({});
+          setCoords(location);
+          location = await Location.reverseGeocodeAsync( {latitude: location.coords.latitude, longitude: location.coords.longitude} );
           setCity(location);
         })();
       }
-      
-      if(city && isLoading){
-        setIsLoading(false);
-        
-      }
+      setTimeout( () => {
+        if(coords && isLoading){
+          setMarkers(JSON.parse(temp));
+          setIsLoading(false);
+        }
+      }, 300)
     })
 
     if(isLoading){        
         return(
-            <View style = {[styles.container, {backgroundColor: props.user.setting.backgroundColor}]}>  
-            <Text>Is loading...</Text>
+            <View style = {styles.container}>  
+              <Text>Is loading...</Text>
             </View>
         )
     }
     else{
         return(
           <Drawer.Navigator > 
-            <Drawer.Screen  name = "Main" component = {MapButton}/>
-            <Drawer.Screen  name = "Map" component = {Map}/>
+
+            <Drawer.Screen name = "main" >
+              { (navigation) => <MapButton navigation = {navigation}/> }
+            </Drawer.Screen>
+
+            <Drawer.Screen name = "setting" >
+              { () => <Setting city = {city}/> }
+            </Drawer.Screen>
+
+            <Drawer.Screen name = "map" >
+              { () => <Map coords = {coords.coords} markers = {markers}/> }
+            </Drawer.Screen>
+            
+
+            <Drawer.Screen name = "shopsList" >
+              { () => <ShopsList markers = {markers}/> }
+            </Drawer.Screen>
+
+            <Drawer.Screen name = "newShop" >
+              { (navigation) => <ShopForm navigation = {navigation} setMarkers = {setMarkers}/> }
+            </Drawer.Screen >
+
+            <Drawer.Screen name = "Log out" >
+              { (navigation) => <ToStart navigation = {navigation} setMarkers = {setMarkers}/> }
+            </Drawer.Screen >
           </Drawer.Navigator >
         
         )
     }
 }
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-     // backgroundColor: 'black',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default Main;

@@ -1,36 +1,38 @@
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, View, TextInput, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import createShopScheme from '../scheme/createShopScheme'
+//import createShopScheme from '../scheme/createShopScheme'
 
 
-async function addShop(name: string, shopType: string, latitude: string, longitude: string, setShow: void){
-    let validate = createShopScheme.validate({name, shopType, latitude, longitude});
-    if(validate.error){
-        alert(validate.error);
-    }
-    else{
+async function addShop(name: string, shopType: any, latitude: string, longitude: string, navigation: any, setMarkers: any){
+    // let validate = createShopScheme.validate({name, shopType, latitude, longitude});
+    // if(validate.error){
+    //     alert(validate.error);
+    // }
+    // else{
         let temp = await AsyncStorage.getItem('shops');
         if(temp){
-            let arrayOfData = JSON.parse(temp);
-            let shop = arrayOfData.find( (element) => element.name === name);
+            let arrayOfData: any = JSON.parse(temp);
+            let shop = arrayOfData.find( (element: any) => element.name === name);
             if(shop){
                 alert('Shop with such name has already exist');
             }
             else{
-                arrayOfData.push({name: name, shopType: shopType, latitude: latitude, longitude: longitude});
+                arrayOfData.push({name: name, shopType: shopType, latitude: latitude, longitude: longitude, favorite: false});
                 await AsyncStorage.setItem('shops', JSON.stringify(arrayOfData));
+                setMarkers(arrayOfData);
                 alert('Success');
-                setShow('main');
+                navigation.navigation.navigate('map');
             }
         }
         else{
-            let arrayOfData = [{name: name, shopType: shopType, latitude: latitude, longitude: longitude}];
+            let arrayOfData = [{name: name, shopType: shopType, latitude: latitude, longitude: longitude, favorite: false}];
             await AsyncStorage.setItem('shops', JSON.stringify(arrayOfData));
+            setMarkers(arrayOfData);
             alert('Success');
-            setShow('main');
+            navigation.navigation.navigate('map');
         }
-    }
+    // }
 }
 
 const DATA = [
@@ -66,6 +68,11 @@ const Item = ({ item, onPress, style }) => (
     </TouchableOpacity>
 );
 
+type Props = {
+    navigation: any,
+    setMarkers: any
+}
+
 const ShopForm: React.FC<Props> = (props) => {
     const [selectedTitle, setSelectedTitle] = useState(null);
     const [name, setName] = useState('');
@@ -86,7 +93,7 @@ const ShopForm: React.FC<Props> = (props) => {
     return (
       <View style={styles.container}>
         <Text>Enter shop name</Text>
-        <TextInput placeholder = {'Enter shop name'} onChange = {(event) => setName(event.target.value)} />
+        <TextInput placeholder = {'Enter shop name'} onChangeText = {(event: any) =>  setName(event)} />
         <Text>Choose shop type</Text>
         <SafeAreaView style={styles.container}>
         <FlatList
@@ -97,11 +104,10 @@ const ShopForm: React.FC<Props> = (props) => {
         />
         </SafeAreaView>
         <Text>Enter shop latitude</Text>
-        <TextInput placeholder = {'Enter shop latitude'} onChange = {(event) => setLatitude(event.target.value)} />
+        <TextInput placeholder = {'Enter shop latitude'} onChangeText = {(event: any) => setLatitude(event)} />
         <Text>Enter shop longitude</Text>
-        <TextInput placeholder = {'Enter shop longitude'} onChange = {(event) => setLongitude(event.target.value)}/>
-        <Button title = 'add shop' onPress = { () => addShop(name, selectedTitle, latitude, longitude, props.setShow) }/>
-        <Button title = 'back' onPress = { () => props.setShow('main') }/>
+        <TextInput placeholder = {'Enter shop longitude'} onChangeText = {(event: any) => setLongitude(event)}/>
+        <Button title = 'add shop' onPress = { () => addShop(name, selectedTitle, latitude, longitude, props.navigation, props.setMarkers) }/>
       </View>
     );
   }

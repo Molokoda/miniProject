@@ -41,9 +41,9 @@ const LoginForm: React.FC<Props> = (props) => {
     return (
       <View style={styles.container}>
         <Text>Enter your login</Text>
-        <TextInput placeholder = {'Enter your login'} onChange = {(event: any) => setLogin(event.target.value)}/>
+        <TextInput placeholder = {'Enter your login'} onChangeText = {(event: any) => setLogin(event)}/>
         <Text>Enter your password</Text>
-        <TextInput placeholder = {'Enter your password'} onChange = {(event: any) => setPassword(event.target.value)}/>
+        <TextInput placeholder = {'Enter your password'} onChangeText = {(event: any) => setPassword(event)}/>
         <Button title = 'login' onPress = { () => loginUser(login, password, props.navigation, props.setUser)}/>
       </View>
     );

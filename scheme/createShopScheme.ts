@@ -19,8 +19,7 @@ const createShopScheme = Joi.object({
     ],
 
     longitude: [
-        Joi.string(),
-        Joi.number()
+        Joi.string()
         .required(),
     ],
 })

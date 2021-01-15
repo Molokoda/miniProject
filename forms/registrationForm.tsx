@@ -63,11 +63,11 @@ const RegistrationForm: React.FC<Props> = (props) => {
     return (
       <View style={styles.container}>
         <Text>Enter your login</Text>
-        <TextInput placeholder = {'Enter your login'} onChange = {(event: any) => setLogin(event.target.value)} />
+        <TextInput placeholder = {'Enter your login'} onChangeText = {(event: any) => setLogin(event)} />
         <Text>Enter your password</Text>
-        <TextInput placeholder = {'Enter your password'} onChange = {(event: any) => setPassword(event.target.value)} />
+        <TextInput placeholder = {'Enter your password'} onChangeText = {(event: any) => setPassword(event)} />
         <Text>Enter your name</Text>
-        <TextInput placeholder = {'Enter your name'} onChange = {(event: any) => setName(event.target.value)}/>
+        <TextInput placeholder = {'Enter your name'} onChangeText = {(event: any) => setName(event)}/>
         <Button title = 'registration' onPress = { () => regNewUser(login, password, name, props.navigation) }/>
       </View>
     );
