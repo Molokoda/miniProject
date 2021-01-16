@@ -11,16 +11,18 @@ import ShopsList from './shopsList';
 const Drawer = createDrawerNavigator();
 
 
-async function logOut(setShow: any){
-    await AsyncStorage.setItem('isLogin', JSON.stringify({login: 'false', user: ''}));
-    setShow('main');
-}
+
 
 type Props = {
   user: any,
   setUser: any,
   navigation: any
-  
+  isDark: any,
+  setIsDark: any,
+  theme: any,
+  setTheme: any,
+  navigatorTheme : any
+  setNavigatorTheme: any
 }
 
 type PropsMapButton = {
@@ -78,41 +80,49 @@ const Main: React.FC<Props> = (props) => {
 
     if(isLoading){        
         return(
-            <View style = {styles.container}>  
-              <Text>Is loading...</Text>
+            <View style = { [styles.container, {backgroundColor: props.theme.backgroundColor}]}>  
+              <Text style = {{color: props.theme.color}}>Is loading...</Text>
             </View>
         )
     }
     else{
         return(
-          <Drawer.Navigator > 
+            <Drawer.Navigator > 
 
-            <Drawer.Screen name = "main" >
-              { (navigation) => <MapButton navigation = {navigation}/> }
-            </Drawer.Screen>
+              <Drawer.Screen name = "main" >
+                { (navigation) => <MapButton navigation = {navigation}/> }
+              </Drawer.Screen>
 
-            <Drawer.Screen name = "setting" >
-              { () => <Setting city = {city}/> }
-            </Drawer.Screen>
+              <Drawer.Screen name = "setting" >
+                { () => <Setting 
+                          city = {city} 
+                          isDark = {props.isDark} 
+                          setIsDark = {props.setIsDark} 
+                          theme = {props.theme} 
+                          setTheme = {props.setTheme}
+                          navigatorTheme = {props.navigatorTheme}
+                          setNavigatorTheme = {props.setNavigatorTheme}
+                        /> 
+                }
+              </Drawer.Screen>
 
-            <Drawer.Screen name = "map" >
-              { () => <Map coords = {coords.coords} markers = {markers}/> }
-            </Drawer.Screen>
-            
+              <Drawer.Screen name = "map" >
+                { () => <Map coords = {coords.coords} markers = {markers} isDark = {props.isDark} theme = {props.theme}/> }
+              </Drawer.Screen>
+              
 
-            <Drawer.Screen name = "shopsList" >
-              { () => <ShopsList markers = {markers}/> }
-            </Drawer.Screen>
+              <Drawer.Screen name = "shopsList" >
+                { () => <ShopsList markers = {markers} theme = {props.theme}/> }
+              </Drawer.Screen>
 
-            <Drawer.Screen name = "newShop" >
-              { (navigation) => <ShopForm navigation = {navigation} setMarkers = {setMarkers}/> }
-            </Drawer.Screen >
+              <Drawer.Screen name = "newShop" >
+                { (navigation) => <ShopForm navigation = {navigation} setMarkers = {setMarkers} theme = {props.theme}/> }
+              </Drawer.Screen >
 
-            <Drawer.Screen name = "Log out" >
-              { (navigation) => <ToStart navigation = {navigation} setMarkers = {setMarkers}/> }
-            </Drawer.Screen >
-          </Drawer.Navigator >
-        
+              <Drawer.Screen name = "Log out" >
+                { (navigation) => <ToStart navigation = {navigation}/> }
+              </Drawer.Screen >
+            </Drawer.Navigator >
         )
     }
 }

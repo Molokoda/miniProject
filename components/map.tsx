@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {  View, StyleSheet, Button, TextInput, Text } from 'react-native';
-import MapView, {Marker, MarkerAnimated} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from 'react-native-modal';
-
+import darkMap from './darkStyle'
 async function changeFavorite(shop: any, setShops: any){
   if(shop.favorite){
       shop.favorite = false;
@@ -61,7 +61,9 @@ function showMarkerInfo(setModalVisible: any, setMarkerInfo: any, shop: any, set
 
 type Props = {
   coords: any,
-  markers: any
+  markers: any,
+  isDark: boolean,
+  theme: any
 }
 
 const Map: React.FC<Props> = (props) => {
@@ -72,7 +74,7 @@ const Map: React.FC<Props> = (props) => {
   const [currentShop, setCurrentShop] = useState({});
   return(
     <View style = {styles.map}>
-        <MapView style = {styles.map}>
+        <MapView style = {styles.map} customMapStyle = {props.isDark ? darkMap: []}>
         { shops.map( (shop: any, index: number) => {
               let type;
               if(shop.shopType == 'food'){
@@ -100,10 +102,11 @@ const Map: React.FC<Props> = (props) => {
                ) 
             } ) } 
         </MapView >
-        <View style = {styles.searchBox}>
+        <View style = { [styles.searchBox, {backgroundColor: props.theme.backgroundColor}]}>
           <TextInput 
             placeholder = {'Enter shop name'} 
-            placeholderTextColor = '#fff'
+            style = { {color: props.theme.color} }
+            placeholderTextColor = {props.theme.placeholderColor}
             autoCapitalize = 'none'
             onChangeText = {(event: any) =>  filterShops(event, props.markers, setShops, isOnlyFavorite)}
           />
@@ -134,7 +137,6 @@ const styles = StyleSheet.create({
   searchBox: {
     position: 'absolute',
     flexDirection: 'row',
-    backgroundColor: '#000',
     width: '90%',
     alignSelf: 'center',
     borderRadius: 5,

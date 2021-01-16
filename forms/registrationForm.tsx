@@ -53,6 +53,7 @@ async function regNewUser(login: string, password: string, name: string, navigat
 
 type Props = {
   navigation: any,
+  theme: any
 }
 
 
@@ -62,12 +63,27 @@ const RegistrationForm: React.FC<Props> = (props) => {
     const [name, setName] = useState('');
     return (
       <View style={styles.container}>
-        <Text>Enter your login</Text>
-        <TextInput placeholder = {'Enter your login'} onChangeText = {(event: any) => setLogin(event)} />
-        <Text>Enter your password</Text>
-        <TextInput placeholder = {'Enter your password'} onChangeText = {(event: any) => setPassword(event)} />
-        <Text>Enter your name</Text>
-        <TextInput placeholder = {'Enter your name'} onChangeText = {(event: any) => setName(event)}/>
+        <Text style = { {color: props.theme.color} } >Enter your login</Text>
+        <TextInput
+          style = {{color: props.theme.color}} 
+          placeholderTextColor = {props.theme.placeholderColor} 
+          placeholder = {'Enter your login'} 
+          onChangeText = {(event: any) => setLogin(event)} 
+        />
+        <Text style = { {color: props.theme.color} } >Enter your password</Text>
+        <TextInput 
+          style = {{color: props.theme.color}} 
+          placeholderTextColor = {props.theme.placeholderColor} 
+          placeholder = {'Enter your password'} 
+          onChangeText = {(event: any) => setPassword(event)} 
+        />
+        <Text style = { {color: props.theme.color} } >Enter your name</Text>
+        <TextInput 
+          style = {{color: props.theme.color}} 
+          placeholderTextColor = {props.theme.placeholderColor} 
+          placeholder = {'Enter your name'} 
+          onChangeText = {(event: any) => setName(event)}
+        />
         <Button title = 'registration' onPress = { () => regNewUser(login, password, name, props.navigation) }/>
       </View>
     );
@@ -76,7 +92,6 @@ const RegistrationForm: React.FC<Props> = (props) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
     },

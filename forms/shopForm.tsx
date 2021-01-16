@@ -70,7 +70,8 @@ const Item = ({ item, onPress, style }) => (
 
 type Props = {
     navigation: any,
-    setMarkers: any
+    setMarkers: any,
+    theme: any
 }
 
 const ShopForm: React.FC<Props> = (props) => {
@@ -92,9 +93,14 @@ const ShopForm: React.FC<Props> = (props) => {
 
     return (
       <View style={styles.container}>
-        <Text>Enter shop name</Text>
-        <TextInput placeholder = {'Enter shop name'} onChangeText = {(event: any) =>  setName(event)} />
-        <Text>Choose shop type</Text>
+        <Text style = { {color: props.theme.color} }>Enter shop name</Text>
+        <TextInput 
+            style = {{color: props.theme.color}} 
+            placeholderTextColor = {props.theme.placeholderColor} 
+            placeholder = {'Enter shop name'} 
+            onChangeText = {(event: any) =>  setName(event)} 
+        />
+        <Text style = { {color: props.theme.color} }>Choose shop type</Text>
         <SafeAreaView style={styles.container}>
         <FlatList
             data={DATA}
@@ -103,10 +109,20 @@ const ShopForm: React.FC<Props> = (props) => {
             extraData = {selectedTitle}
         />
         </SafeAreaView>
-        <Text>Enter shop latitude</Text>
-        <TextInput placeholder = {'Enter shop latitude'} onChangeText = {(event: any) => setLatitude(event)} />
-        <Text>Enter shop longitude</Text>
-        <TextInput placeholder = {'Enter shop longitude'} onChangeText = {(event: any) => setLongitude(event)}/>
+        <Text style = { {color: props.theme.color} }>Enter shop latitude</Text>
+        <TextInput 
+            style = {{color: props.theme.color}} 
+            placeholderTextColor = {props.theme.placeholderColor} 
+            placeholder = {'Enter shop latitude'} 
+            onChangeText = {(event: any) => setLatitude(event)} 
+        />
+        <Text style = { {color: props.theme.color} }>Enter shop longitude</Text>
+        <TextInput 
+            style = {{color: props.theme.color}} 
+            placeholderTextColor = {props.theme.placeholderColor} 
+            placeholder = {'Enter shop longitude'} 
+            onChangeText = {(event: any) => setLongitude(event)}
+        />
         <Button title = 'add shop' onPress = { () => addShop(name, selectedTitle, latitude, longitude, props.navigation, props.setMarkers) }/>
       </View>
     );
@@ -115,7 +131,6 @@ const ShopForm: React.FC<Props> = (props) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
     },

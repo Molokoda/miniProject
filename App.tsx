@@ -1,33 +1,32 @@
 import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
 import Start from './components/start'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginForm from './forms/loginForm'
 import RegistrationForm from './forms/registrationForm'
 import Main from './components/main'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-//import loginScheme from './scheme/loginScheme'
-//import regScheme from './scheme/registrationScheme'
-import { StyleSheet, Text, View, Button, Dimensions, TextInput } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
 const Stack = createStackNavigator();
-
-
 
 export default function App() {
   const [user, setUser] = useState('');
   const [startScreen, setStartScreen] = useState('start');
   const [logCheck, setLogCheck] = useState(false);
+  const [theme, setTheme] = useState({backgroundColor: '#fff', color: '#000', placeholderColor: '#696969' });
+  const [isDark, setIsDark] = useState(false);
+  const [navigatorTheme, setNavigatorTheme] = useState(DefaultTheme);
   let temp: any = '';
   AsyncStorage.getItem('isLogin').then(result => temp = result)
-  
   type isLog ={
     login: string,
     user: any
   }
 
   useEffect( () => {
+    
     let isLogin: isLog;
     setTimeout(() =>  {
       if(logCheck === false && !temp){
@@ -54,7 +53,7 @@ export default function App() {
   }
   else{
     return (
-      <NavigationContainer>
+      <NavigationContainer theme = {navigatorTheme}>
         <Stack.Navigator initialRouteName = { startScreen} screenOptions = {{
           headerStyle: {
             backgroundColor: '#009387',
@@ -65,19 +64,28 @@ export default function App() {
           }
         }}>
          <Stack.Screen name="start">
-            {props => <Start {...props}  />}
+            { (props) => <Start navigation = {props.navigation}  />}
           </Stack.Screen>
           
           <Stack.Screen name="login">
-            { (navigation) => <LoginForm  navigation = {navigation} setUser = {setUser} />  }
+            { (navigation) => <LoginForm  navigation = {navigation} setUser = {setUser} theme = {theme}/>  }
           </Stack.Screen>
   
           <Stack.Screen name="registration">
-            { (navigation) => <RegistrationForm  navigation = {navigation} />  }
+            { (navigation) => <RegistrationForm  navigation = {navigation} theme = {theme}/>  }
           </Stack.Screen>
           
           <Stack.Screen name="main">
-            { (navigation) => <Main  navigation = {navigation} setUser = {setUser} user = {user}/>  }
+            { (navigation) => <Main  
+                                navigation = {navigation} 
+                                setUser = {setUser} user = {user} 
+                                isDark = {isDark} setIsDark = {setIsDark} 
+                                theme = {theme} setTheme = {setTheme}
+                                navigatorTheme = {navigatorTheme}
+                                setNavigatorTheme = {setNavigatorTheme}
+                              /> 
+                               
+            }
           </Stack.Screen>
   
         </Stack.Navigator>
@@ -89,7 +97,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },

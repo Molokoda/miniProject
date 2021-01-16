@@ -1,19 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Dimensions, TextInput } from 'react-native'
+import { StyleSheet,  View, Button } from 'react-native'
+import {  DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 type Props = {
-  navigation: any
+  navigation: any,
 }
 
 
-
-const Start: React.FC<Props> = ({navigation}) => {
+const Start: React.FC<Props> = (props) => {
   
   return(
     <View style={styles.container}>
-      <Button title = "Login" onPress={() => navigation.navigate('login')} />
-      <Button title = "Registration" onPress={() => navigation.navigate('registration')} />  
-          
+      <Button title = "Login" onPress={() => props.navigation.navigate('login')} />
+      <Button title = "Registration" onPress={() => props.navigation.navigate('registration')} />  
     </View>
   )
      
@@ -22,7 +21,6 @@ const Start: React.FC<Props> = ({navigation}) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
     }

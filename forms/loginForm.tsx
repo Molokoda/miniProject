@@ -32,7 +32,8 @@ async function loginUser(login: string, password: string, navigation: any, setUs
 
 type Props = {
   navigation: any,
-  setUser: any
+  setUser: any,
+  theme: any
 }
 
 const LoginForm: React.FC<Props> = (props) => {
@@ -40,10 +41,20 @@ const LoginForm: React.FC<Props> = (props) => {
     const [password, setPassword] = useState('');
     return (
       <View style={styles.container}>
-        <Text>Enter your login</Text>
-        <TextInput placeholder = {'Enter your login'} onChangeText = {(event: any) => setLogin(event)}/>
-        <Text>Enter your password</Text>
-        <TextInput placeholder = {'Enter your password'} onChangeText = {(event: any) => setPassword(event)}/>
+        <Text style = { {color: props.theme.color} } >Enter your login</Text>
+        <TextInput 
+          style = {{color: props.theme.color}} 
+          placeholderTextColor = {props.theme.placeholderColor}  
+          placeholder = {'Enter your login'} 
+          onChangeText = {(event: any) => setLogin(event)}
+        />
+        <Text style = { {color: props.theme.color} } >Enter your password</Text>
+        <TextInput 
+          style = {{color: props.theme.color}} 
+          placeholderTextColor = {props.theme.placeholderColor} 
+          placeholder = {'Enter your password'}
+          onChangeText = {(event: any) => setPassword(event)}
+        />
         <Button title = 'login' onPress = { () => loginUser(login, password, props.navigation, props.setUser)}/>
       </View>
     );
@@ -52,7 +63,6 @@ const LoginForm: React.FC<Props> = (props) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
     },
