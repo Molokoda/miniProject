@@ -60,13 +60,15 @@ function showMarkerInfo(setModalVisible: any, setMarkerInfo: any, shop: any, set
 }
 
 type Props = {
-  coords: any,
   markers: any,
   isDark: boolean,
   theme: any
 }
 
 const Map: React.FC<Props> = (props) => {
+  useEffect( () => {
+    
+  })
   const [shops, setShops] = useState(props.markers);
   const [isOnlyFavorite, setIsOnlyFavorite] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);

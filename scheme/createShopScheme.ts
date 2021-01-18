@@ -1,27 +1,10 @@
-const Joi = require('joi');
+const Joi = require('react-native-joi');
 
-const createShopScheme = Joi.object({
-    name: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(15)
-        .required(),
-
-    shopType: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(15)
-        .required(),
-
-    latitude: [
-        Joi.string()
-        .required(),
-    ],
-
-    longitude: [
-        Joi.string()
-        .required(),
-    ],
+const createShopScheme = Joi.object().keys({
+    name: Joi.string().alphanum().min(3).max(30).required(),
+    shopType: Joi.string().required(),
+    latitude: Joi.string().required(),
+    longitude: Joi.string().required(),
 })
 
 export default createShopScheme;

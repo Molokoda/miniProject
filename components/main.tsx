@@ -107,7 +107,7 @@ const Main: React.FC<Props> = (props) => {
               </Drawer.Screen>
 
               <Drawer.Screen name = "map" >
-                { () => <Map coords = {coords.coords} markers = {markers} isDark = {props.isDark} theme = {props.theme}/> }
+                { () => <Map markers = {markers} isDark = {props.isDark} theme = {props.theme}/> }
               </Drawer.Screen>
               
 

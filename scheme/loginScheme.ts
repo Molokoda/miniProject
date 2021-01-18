@@ -1,15 +1,8 @@
-const Joi = require('joi');
-
-const loginSchema = Joi.object({
-    login: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(15)
-        .required(),
-
-    password: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')), 
+const Joi = require('react-native-joi');
+ 
+const loginSchema = Joi.object().keys({
+    login: Joi.string().alphanum().min(3).max(30).required(),
+    password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 })
-    .with('login', 'password');
 
 export default loginSchema;

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, View, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-//import regScheme from '../scheme/registrationScheme'
+import regScheme from '../scheme/registrationScheme'
 
 async function regNewUser(login: string, password: string, name: string, navigation: any){
-    // let validate = await regScheme.validate({ login: login, password: password, name: name});
-    // if(validate.error){
-    //     alert(validate.error);
-    // }
-    // else{
+    let validate = await regScheme.validate({ login: login, password: password, name: name});
+    if(validate.error){
+        alert(validate.error);
+    }
+    else{
         let temp = await AsyncStorage.getItem('users');
         
         if(temp){
@@ -29,7 +29,7 @@ async function regNewUser(login: string, password: string, name: string, navigat
               arrayOfUser.push(user);
               await AsyncStorage.setItem('users', JSON.stringify(arrayOfUser));
               alert('Success');
-              navigation.navigation.navigate('main');
+              navigation.navigation.navigate('start');
           }
         }
         else{
@@ -48,7 +48,7 @@ async function regNewUser(login: string, password: string, name: string, navigat
           alert('Success');
           navigation.navigation.navigate('main');
         }  
-    //}
+    }
 }
 
 type Props = {

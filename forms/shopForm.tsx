@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, View, TextInput, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-//import createShopScheme from '../scheme/createShopScheme'
+import createShopScheme from '../scheme/createShopScheme'
 
 
 async function addShop(name: string, shopType: any, latitude: string, longitude: string, navigation: any, setMarkers: any){
-    // let validate = createShopScheme.validate({name, shopType, latitude, longitude});
-    // if(validate.error){
-    //     alert(validate.error);
-    // }
-    // else{
+    let validate = createShopScheme.validate({name, shopType, latitude, longitude});
+    if(validate.error){
+        alert(validate.error);
+    }
+    else{
         let temp = await AsyncStorage.getItem('shops');
         if(temp){
             let arrayOfData: any = JSON.parse(temp);
@@ -32,7 +32,7 @@ async function addShop(name: string, shopType: any, latitude: string, longitude:
             alert('Success');
             navigation.navigation.navigate('map');
         }
-    // }
+    }
 }
 
 const DATA = [
@@ -62,9 +62,9 @@ const DATA = [
     },
 ]
 
-const Item = ({ item, onPress, style }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-      <Text style={styles.title}>{item.title}</Text>
+const Item = (props: any) => (
+    <TouchableOpacity onPress={props.onPress} style={[styles.item, props.style]}>
+      <Text style={styles.title}>{props.item.title}</Text>
     </TouchableOpacity>
 );
 
@@ -80,12 +80,12 @@ const ShopForm: React.FC<Props> = (props) => {
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
 
-    const renderItem = ({ item }) => {
-        const backgroundColor = item.title === selectedTitle ? "#6e3b6e" : "#f9c2ff";
+    const renderItem = ( props: any ) => {
+        const backgroundColor = props.item.title === selectedTitle ? "#6e3b6e" : "#f9c2ff";
         return (
           <Item
-            item={item}
-            onPress={() => setSelectedTitle(item.title)}
+            item={props.item}
+            onPress={() => setSelectedTitle(props.item.title)}
             style={{ backgroundColor: backgroundColor }}
           />
         );
@@ -101,14 +101,6 @@ const ShopForm: React.FC<Props> = (props) => {
             onChangeText = {(event: any) =>  setName(event)} 
         />
         <Text style = { {color: props.theme.color} }>Choose shop type</Text>
-        <SafeAreaView style={styles.container}>
-        <FlatList
-            data={DATA}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            extraData = {selectedTitle}
-        />
-        </SafeAreaView>
         <Text style = { {color: props.theme.color} }>Enter shop latitude</Text>
         <TextInput 
             style = {{color: props.theme.color}} 
@@ -123,6 +115,14 @@ const ShopForm: React.FC<Props> = (props) => {
             placeholder = {'Enter shop longitude'} 
             onChangeText = {(event: any) => setLongitude(event)}
         />
+        <SafeAreaView style={styles.container}>
+            <FlatList
+                data={DATA}
+                renderItem = {renderItem}
+                keyExtractor={item => item.id}
+                extraData = {selectedTitle}
+            />
+        </SafeAreaView>
         <Button title = 'add shop' onPress = { () => addShop(name, selectedTitle, latitude, longitude, props.navigation, props.setMarkers) }/>
       </View>
     );
