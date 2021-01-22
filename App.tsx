@@ -8,7 +8,9 @@ import RegistrationForm from './forms/registrationForm'
 import Main from './components/main'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, View } from 'react-native'
+// import {notificationManager} from './class/NotificationManager'
 
+// notificationManager.configure();
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -54,7 +56,7 @@ export default function App() {
   else{
     return (
       <NavigationContainer theme = {navigatorTheme}>
-        <Stack.Navigator initialRouteName = { startScreen} screenOptions = {{
+        <Stack.Navigator initialRouteName = { startScreen } screenOptions = {{
           headerStyle: {
             backgroundColor: '#009387',
           },

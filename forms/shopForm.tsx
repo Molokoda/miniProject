@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Button, Text, View, TextInput, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createShopScheme from '../scheme/createShopScheme'
 
@@ -95,26 +95,26 @@ const ShopForm: React.FC<Props> = (props) => {
       <View style={styles.container}>
         <Text style = { {color: props.theme.color} }>Enter shop name</Text>
         <TextInput 
-            style = {{color: props.theme.color}} 
+            style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
             placeholderTextColor = {props.theme.placeholderColor} 
             placeholder = {'Enter shop name'} 
             onChangeText = {(event: any) =>  setName(event)} 
         />
-        <Text style = { {color: props.theme.color} }>Choose shop type</Text>
         <Text style = { {color: props.theme.color} }>Enter shop latitude</Text>
         <TextInput 
-            style = {{color: props.theme.color}} 
+            style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
             placeholderTextColor = {props.theme.placeholderColor} 
             placeholder = {'Enter shop latitude'} 
             onChangeText = {(event: any) => setLatitude(event)} 
         />
         <Text style = { {color: props.theme.color} }>Enter shop longitude</Text>
         <TextInput 
-            style = {{color: props.theme.color}} 
+            style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
             placeholderTextColor = {props.theme.placeholderColor} 
             placeholder = {'Enter shop longitude'} 
             onChangeText = {(event: any) => setLongitude(event)}
         />
+        <Text style = { {color: props.theme.color} }>Choose shop type</Text>
         <SafeAreaView style={styles.container}>
             <FlatList
                 data={DATA}
@@ -123,7 +123,12 @@ const ShopForm: React.FC<Props> = (props) => {
                 extraData = {selectedTitle}
             />
         </SafeAreaView>
-        <Button title = 'add shop' onPress = { () => addShop(name, selectedTitle, latitude, longitude, props.navigation, props.setMarkers) }/>
+        <TouchableOpacity
+            style={styles.button}
+            onPress = { () => addShop(name, selectedTitle, latitude, longitude, props.navigation, props.setMarkers) } 
+        >
+            <Text>Add shop</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -142,6 +147,14 @@ const ShopForm: React.FC<Props> = (props) => {
       },
     title: {
         fontSize: 16,
+    },
+    button: {
+        alignItems: "center",
+        width: 150,
+        borderRadius: 40,
+        backgroundColor: "orange",
+        padding: 10,
+        marginBottom: 20
     },
   });
 

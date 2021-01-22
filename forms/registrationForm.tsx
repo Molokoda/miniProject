@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Button, Text, View, TextInput } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import regScheme from '../scheme/registrationScheme'
 
@@ -46,7 +46,7 @@ async function regNewUser(login: string, password: string, name: string, navigat
           arrayOfUser.push(user);
           await AsyncStorage.setItem('users', JSON.stringify(arrayOfUser));
           alert('Success');
-          navigation.navigation.navigate('main');
+          navigation.navigation.navigate('start');
         }  
     }
 }
@@ -65,26 +65,32 @@ const RegistrationForm: React.FC<Props> = (props) => {
       <View style={styles.container}>
         <Text style = { {color: props.theme.color} } >Enter your login</Text>
         <TextInput
-          style = {{color: props.theme.color}} 
+          style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
           placeholderTextColor = {props.theme.placeholderColor} 
           placeholder = {'Enter your login'} 
           onChangeText = {(event: any) => setLogin(event)} 
         />
         <Text style = { {color: props.theme.color} } >Enter your password</Text>
         <TextInput 
-          style = {{color: props.theme.color}} 
+          style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
           placeholderTextColor = {props.theme.placeholderColor} 
           placeholder = {'Enter your password'} 
           onChangeText = {(event: any) => setPassword(event)} 
         />
         <Text style = { {color: props.theme.color} } >Enter your name</Text>
         <TextInput 
-          style = {{color: props.theme.color}} 
+          style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
           placeholderTextColor = {props.theme.placeholderColor} 
           placeholder = {'Enter your name'} 
           onChangeText = {(event: any) => setName(event)}
         />
-        <Button title = 'registration' onPress = { () => regNewUser(login, password, name, props.navigation) }/>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress = { () => regNewUser(login, password, name, props.navigation)} 
+        >
+          <Text>Registration</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -94,6 +100,14 @@ const RegistrationForm: React.FC<Props> = (props) => {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    button: {
+      alignItems: "center",
+      width: 150,
+      borderRadius: 40,
+      backgroundColor: "orange",
+      padding: 10,
+      marginBottom: 20
     },
   });
 

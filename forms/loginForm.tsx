@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import {  StyleSheet, Button, Text, View, TextInput } from 'react-native';
+import {  StyleSheet,  Text, View, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import loginScheme from '../scheme/loginScheme'
 
@@ -44,19 +44,26 @@ const LoginForm: React.FC<Props> = (props) => {
       <View style={styles.container}>
         <Text style = { {color: props.theme.color} } >Enter your login</Text>
         <TextInput 
-          style = {{color: props.theme.color}} 
+          style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 20}} 
           placeholderTextColor = {props.theme.placeholderColor}  
           placeholder = {'Enter your login'} 
           onChangeText = {(event: any) => setLogin(event)}
         />
         <Text style = { {color: props.theme.color} } >Enter your password</Text>
         <TextInput 
-          style = {{color: props.theme.color}} 
+          style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginBottom: 10}} 
           placeholderTextColor = {props.theme.placeholderColor} 
           placeholder = {'Enter your password'}
           onChangeText = {(event: any) => setPassword(event)}
         />
-        <Button title = 'login' onPress = { () => loginUser(login, password, props.navigation, props.setUser)}/>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress = { () => loginUser(login, password, props.navigation, props.setUser)} 
+        >
+          <Text>Login</Text>
+        </TouchableOpacity>
+        
       </View>
     );
   }
@@ -66,6 +73,14 @@ const LoginForm: React.FC<Props> = (props) => {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    button: {
+      alignItems: "center",
+      width: 150,
+      borderRadius: 40,
+      backgroundColor: "orange",
+      padding: 10,
+      marginBottom: 20
     },
   });
 

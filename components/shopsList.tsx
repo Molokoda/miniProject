@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {  View, StyleSheet, Text, Button } from 'react-native';
+import {  View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 
 async function changeFavorite(shop: any, setShops: any){
     if(shop.favorite){
@@ -53,31 +53,44 @@ const ShopsList: React.FC<Props> = (props) => {
     const [shops, setShops] = useState(props.markers);
     const [isOnlyFavorite, setIsOnlyFavorite] = useState(false);
     return(
-        <View style = {[styles.container, {backgroundColor: props.theme.backgroundColor}]}>
-            <TextInput 
-                style = {{color: props.theme.color}} 
-                placeholderTextColor = {props.theme.placeholderColor} 
-                placeholder = {'Enter shop name'} 
-                onChangeText = {(event: any) =>  filterShops(event, props.markers, setShops, isOnlyFavorite)}>
-            </TextInput>
-            <Button title = 'only favorite' onPress = { () => {onlyFavorite(props.markers, setShops, setIsOnlyFavorite)}}/>
-            <Button title = 'show all' onPress = { () => {showAll(props.markers, setShops, setIsOnlyFavorite)}}/>
-            { shops.map( (shop: any, index: number) => {
-                let fav: string = '';
-                if(shop.favorite){
-                    fav = 'favorite'
-                }
-                else{
-                    fav = 'unfavorite'
-                }
-               return(
-                <View key = {index}>
-                    <Text style = {{color: props.theme.color}}>Name: {shop.name}, type: {shop.shopType}</Text>
-                    <Button title = {fav}   onPress =  { () => {changeFavorite(shop, setShops)} }/> 
-                </View>
-               ) 
-            })} 
-        </View>
+        <ScrollView>
+            <View style = {[styles.container, {backgroundColor: props.theme.backgroundColor}]}>
+                <TextInput 
+                    style = {{color: props.theme.color, borderWidth: 1, borderColor: props.theme.color, width: 200, paddingLeft: 10, marginTop: 20, marginBottom: 10}} 
+                    placeholderTextColor = {props.theme.placeholderColor} 
+                    placeholder = {'Enter shop name'} 
+                    onChangeText = {(event: any) =>  filterShops(event, props.markers, setShops, isOnlyFavorite)}>
+                </TextInput>
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress = { () => {onlyFavorite(props.markers, setShops, setIsOnlyFavorite)}}
+                >
+                    <Text>Only favorite</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress = { () => {showAll(props.markers, setShops, setIsOnlyFavorite)}}
+                >
+                    <Text>Show all</Text>
+                </TouchableOpacity>
+                { shops.map( (shop: any, index: number) => {
+                    return(
+                        <View key = {index} style = {styles.container}>
+                            <Text style = {{color: props.theme.color}}>Name: {shop.name}, type: {shop.shopType}</Text>
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress =  { () => {changeFavorite(shop, setShops)} }
+                            >
+                                <Text> {shop.favorite ? 'Unfavorite' : 'Favorite' } </Text>
+                            </TouchableOpacity>
+
+                        </View>
+                ) 
+                })} 
+            </View>
+        </ScrollView>
     );
 }
 
@@ -87,6 +100,14 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    button: {
+        alignItems: "center",
+        width: 150,
+        borderRadius: 40,
+        backgroundColor: "orange",
+        padding: 10,
+        marginBottom: 20
+      },
 });
 
 export default ShopsList

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "746699658756",
+    "project_id": "miniproject-301513",
+    "storage_bucket": "miniproject-301513.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746699658756:android:5b7fe08fd490313d2bc751",
+        "android_client_info": {
+          "package_name": "com.vironIt.miniProject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746699658756-v7cfakinhrj22kggs0uk5u1gqrgg0sga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDjL4OIEmIi0mYSDchCk_SPeHTc7E5zEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746699658756-v7cfakinhrj22kggs0uk5u1gqrgg0sga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

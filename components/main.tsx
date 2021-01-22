@@ -1,17 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useReducer } from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, ImagePropTypes } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import * as Location from 'expo-location';
 import Map from './map'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ShopForm from '../forms/shopForm';
 import Setting from './setting'
 import ShopsList from './shopsList';
+
+
 const Drawer = createDrawerNavigator();
-
-
-
 
 type Props = {
   user: any,
@@ -32,7 +31,12 @@ type PropsMapButton = {
 const MapButton: React.FC<PropsMapButton> = (props) => {
   return(
     <View style = {styles.container}>
-      <Button title = 'map' onPress = { () => props.navigation.navigation.navigate('map')}/>
+      <TouchableOpacity
+        style={styles.button}
+        onPress = { () => props.navigation.navigation.navigate('map')}
+      >
+        <Text> Map </Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -53,6 +57,7 @@ const Main: React.FC<Props> = (props) => {
     const [coords, setCoords] = useState('');
     const [city, setCity] = useState('');
     const [markers, setMarkers] = useState([]);
+    const [distance, setDistance] = useState(3);
     let temp: any = '';
     AsyncStorage.getItem('shops').then(result => temp = result)
     useEffect(() => {
@@ -94,7 +99,7 @@ const Main: React.FC<Props> = (props) => {
               </Drawer.Screen>
 
               <Drawer.Screen name = "setting" >
-                { () => <Setting 
+                { (navigation) => <Setting 
                           city = {city} 
                           isDark = {props.isDark} 
                           setIsDark = {props.setIsDark} 
@@ -102,12 +107,14 @@ const Main: React.FC<Props> = (props) => {
                           setTheme = {props.setTheme}
                           navigatorTheme = {props.navigatorTheme}
                           setNavigatorTheme = {props.setNavigatorTheme}
+                          setDistance = {setDistance}
+                          navigation = {navigation}
                         /> 
                 }
               </Drawer.Screen>
 
               <Drawer.Screen name = "map" >
-                { () => <Map markers = {markers} isDark = {props.isDark} theme = {props.theme}/> }
+                { () => <Map markers = {markers} isDark = {props.isDark} theme = {props.theme} coords = {coords} distance = {distance}/> }
               </Drawer.Screen>
               
 
@@ -133,6 +140,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  button: {
+    alignItems: "center",
+    width: 150,
+    borderRadius: 40,
+    backgroundColor: "orange",
+    padding: 10,
+    marginBottom: 20
   },
 });
 

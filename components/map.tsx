@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {  View, StyleSheet, Button, TextInput, Text } from 'react-native';
+import {  View, StyleSheet, Button, TextInput, Text, TouchableOpacity } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from 'react-native-modal';
-import darkMap from './darkStyle'
+import darkMap from './darkStyle';
+const Geofence = require('react-native-expo-geofence');
+
 async function changeFavorite(shop: any, setShops: any){
   if(shop.favorite){
       shop.favorite = false;
@@ -59,24 +61,67 @@ function showMarkerInfo(setModalVisible: any, setMarkerInfo: any, shop: any, set
   setCurrentShop(shop);
 }
 
+function backdropPress(index: number, setIndex: any, nearshop: any, setModalVisible: any){
+  if(index < nearshop.length){
+    setIndex(index + 1);
+  }
+  setModalVisible(false);
+}
+
 type Props = {
   markers: any,
   isDark: boolean,
-  theme: any
+  theme: any,
+  coords: any,
+  distance: any
 }
 
 const Map: React.FC<Props> = (props) => {
-  useEffect( () => {
-    
-  })
   const [shops, setShops] = useState(props.markers);
   const [isOnlyFavorite, setIsOnlyFavorite] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [markerInfo, setMarkerInfo] = useState('');
-  const [currentShop, setCurrentShop] = useState({});
+  const [currentShop, setCurrentShop] = useState( {name: String, shopType: String, favorite: Boolean} );
+  const [nearShops, setNearShops] = useState([{name: String, shopType: String, favorite: Boolean}]);
+  const [oldDistance, setOldDistance] = useState(2);
+  const [shopIndex, setShopIndex] = useState(0);
+  useEffect( () => {
+    if( Number(oldDistance) !== Number(props.distance) ){
+      let points = shops.map( (shop: any) => { return {latitude:  shop.latitude, longitude: shop.longitude} } );
+      let startPoint = {latitude: props.coords.coords.latitude, longitude: props.coords.coords.longitude};
+      let result = Geofence.default.filterByProximity(startPoint, points, Number(props.distance) );
+      let findShops;
+      if( result.length > 0 ){
+        findShops = result.map( (nearShop: any) => {
+          return shops.find( (shop: any) =>  {
+            if(shop.latitude === nearShop.latitude && shop.longitude === nearShop.longitude){
+              return shop
+            }
+          } )
+        })
+        setNearShops(findShops)
+        setShopIndex(0);
+
+      }
+      else{
+        alert('There is no shop in this distance');
+      }
+      setOldDistance(props.distance);
+    }
+    if(shopIndex < nearShops.length){
+      setModalVisible(true);
+      setMarkerInfo(`${nearShops[shopIndex].name}, ${nearShops[shopIndex].shopType}`);
+      setCurrentShop(nearShops[shopIndex]);
+    }
+  })
+
   return(
     <View style = {styles.map}>
-        <MapView style = {styles.map} customMapStyle = {props.isDark ? darkMap: []}>
+        <MapView 
+          style = {styles.map} 
+          customMapStyle = {props.isDark ? darkMap: []} 
+          initialRegion = {  { latitude: props.coords.coords.latitude, longitude: props.coords.coords.longitude, latitudeDelta: 0.015, longitudeDelta: 0.0121 } } 
+        >
         { shops.map( (shop: any, index: number) => {
               let type;
               if(shop.shopType == 'food'){
@@ -96,7 +141,8 @@ const Map: React.FC<Props> = (props) => {
               }
                return(
                 <Marker 
-                  key = {index} 
+                  title = {shop.name}
+                  key = {String(index)} 
                   coordinate = { {latitude: Number(shop.latitude), longitude: Number(shop.longitude)} } 
                   image = { type }
                   onPress = { () => {showMarkerInfo(setModalVisible, setMarkerInfo, shop, setCurrentShop)}}
@@ -114,10 +160,15 @@ const Map: React.FC<Props> = (props) => {
           />
 
         </View>
-        <Modal isVisible={isModalVisible} onBackdropPress={() => setModalVisible(false)}>
+        <Modal isVisible={isModalVisible} onBackdropPress={() => backdropPress(shopIndex, setShopIndex, nearShops, setModalVisible)}>
           <View style={styles.container}>
-            <Text>{markerInfo}</Text>
-            <Button title = 'Like' onPress = { () => {changeFavorite(currentShop, setShops)}}/>
+            <Text style = { {color: 'white'} }>{markerInfo}</Text>
+            <TouchableOpacity
+                style={styles.button}
+                onPress = { () => {changeFavorite(currentShop, setShops)}}
+            >
+                <Text>{ currentShop.favorite ? 'Unlike' : 'Like'}</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
         <Button title = 'only favorite' onPress = { () => {onlyFavorite(props.markers, setShops, setIsOnlyFavorite)}}/>
@@ -148,7 +199,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
     elevation: 10,
-  }
+  },
+  button: {
+    alignItems: "center",
+    width: 150,
+    borderRadius: 40,
+    backgroundColor: "orange",
+    padding: 10,
+    marginBottom: 20
+  },
 });
 
 export default Map;
