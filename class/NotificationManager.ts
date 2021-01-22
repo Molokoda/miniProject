@@ -1,6 +1,17 @@
 import PushNotification from 'react-native-push-notification';
 
 
+type options = {
+  largeIcon: string,
+  smallIcon: string,
+  vibrate: boolean,
+  vibration: number,
+  priority: string,
+  importance: string,
+  playSound: boolean,
+  soundName: string
+}
+
 class NotificationManager {
     configure = () => {
       PushNotification.configure({
@@ -14,7 +25,13 @@ class NotificationManager {
       })
     }
   
-    _buildAndroidNotification = (id, title, message, data = {}, options = {}) => {
+    _buildAndroidNotification = (
+        id: number, 
+        title: string, 
+        message: string, 
+        data = {}, 
+        options: options
+      ) => {
       return({
         id: id,
         autoCancel: true,
@@ -30,13 +47,19 @@ class NotificationManager {
       })
     }
   
-    showNotification = (id, title, message, data = {}, oprions = {}) => {
+    showNotification = (
+        id: number, 
+        title: string, 
+        message: string, 
+        data = {}, 
+        options : options
+      ) => {
       PushNotification.localNotification({
         ...this._buildAndroidNotification(id, title, message, data, options),
         title: title || '',
         message: message || '',
         playSound: options.playSound || false,
-        soundName: oprions.soundName || 'default',
+        soundName: options.soundName || 'default',
         userInteraction: false
       })
     }

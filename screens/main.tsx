@@ -1,14 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
 import * as Location from 'expo-location';
 import Map from './map'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ShopForm from '../forms/shopForm';
 import Setting from './setting'
-import ShopsList from './shopsList';
-
+import ShopsList from '../screens/shopsList';
+import MapButton from '../components/MapButton'
+import ToStart from '../components/ToStart'
 
 const Drawer = createDrawerNavigator();
 
@@ -24,32 +25,8 @@ type Props = {
   setNavigatorTheme: any
 }
 
-type PropsMapButton = {
-  navigation: any
-}
 
-const MapButton: React.FC<PropsMapButton> = (props) => {
-  return(
-    <View style = {styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress = { () => props.navigation.navigation.navigate('map')}
-      >
-        <Text> Map </Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
 
-const ToStart: React.FC<PropsMapButton> = (props) => {
-  useEffect( () => {
-    AsyncStorage.setItem('isLogin', JSON.stringify({login: 'false', user: ''}) );
-    props.navigation.navigation.navigate('start');
-  })
-  return(
-    <View></View>
-  )
-}
 
 const Main: React.FC<Props> = (props) => {
     

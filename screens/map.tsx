@@ -3,7 +3,7 @@ import {  View, StyleSheet, Button, TextInput, Text, TouchableOpacity } from 're
 import MapView, {Marker} from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from 'react-native-modal';
-import darkMap from './darkStyle';
+import darkMap from '../components/darkStyle';
 const Geofence = require('react-native-expo-geofence');
 
 async function changeFavorite(shop: any, setShops: any){

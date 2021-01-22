@@ -1,14 +1,14 @@
 import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
-import Start from './components/start'
+import Start from './screens/start'
 import { NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginForm from './forms/loginForm'
 import RegistrationForm from './forms/registrationForm'
-import Main from './components/main'
+import Main from './screens/main'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, View } from 'react-native'
-// import {notificationManager} from './class/NotificationManager'
+import {notificationManager} from './class/NotificationManager'
 
 // notificationManager.configure();
 const Stack = createStackNavigator();
